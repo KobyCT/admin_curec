@@ -2,7 +2,7 @@ import ProductInspection from "./clientcomp";
 import Products from "./getProduct";
 
 export default async function ProductPage({ searchParams }) {
-  const type = searchParams.type || "Unapproved";
+  const type = (await searchParams).type || "Unapproved";
 
   return (
     <ProductInspection>

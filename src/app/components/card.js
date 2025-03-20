@@ -18,7 +18,7 @@ export default function Product({
           alt={alt}
           width={80}
           height={80}
-          className="rounded-lg"
+          className="rounded-lg h:auto"
         />
         <div className="ml-4 flex-1">
           <h3 className="font-medium">{product_name}</h3>

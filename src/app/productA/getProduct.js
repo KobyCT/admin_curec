@@ -42,6 +42,7 @@ export default async function Products({ type }) {
   };
 
   const data = await getProduct();
+  console.log(data);
 
   if (data.length === 0) {
     return (
@@ -58,8 +59,14 @@ export default async function Products({ type }) {
           key={product.id}
           id={product.id}
           product_name={product.name}
-          imageSrc={product.image || "/ph.png"}
-          seller={product.sellerid}
+          imageSrc={product.productImageUrls[0]}
+          seller={
+            product.sellerid +
+            " " +
+            product.sellerFirstNameEN +
+            " " +
+            product.sellerLastNameEN
+          }
           price={product.price}
           tag={["None"]}
         />
