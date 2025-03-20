@@ -1,15 +1,10 @@
-import Image from "next/image";
-import Sidebar from "./components/Topnav";
-import Link from "next/link";
-import TopNavbar from "./components/Topnav";
-//
-export default function Home() {
+import ServerComponent from "./getToken";
+
+export default async function Main({ searchParams }) {
+  const para = await searchParams;
   return (
     <div>
-      <TopNavbar />
-      <div className="mt-20">
-        <h1 className="text-black text-xl text-center text-bold">Help :(</h1>
-      </div>
+      <ServerComponent searchParams={para} />
     </div>
   );
 }
