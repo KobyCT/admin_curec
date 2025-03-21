@@ -68,6 +68,152 @@ const handleUnapprove = async (productId) => {
   }
 };
 
+const handleApproveLoud = async (productId) => {
+  const token = getCookie("token");
+  try {
+    // Step 1: Approve the product
+    const res = await fetch(
+      `https://backend-cu-recom.up.railway.app/api/products/approve/${productId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!res.ok) throw new Error("Approval failed");
+
+    // Step 2: Fetch product data to get the seller's ID
+    let productData;
+    try {
+      const product = await fetch(
+        `https://backend-cu-recom.up.railway.app/api/products/${productId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!product.ok) throw new Error("Failed to fetch product");
+
+      productData = await product.json(); // We need to use `await` to get the data
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      alert("เกิดข้อผิดพลาดในการดึงข้อมูลสินค้า");
+      return;
+    }
+
+    // Step 3: Send notification
+    try {
+      const noti = await fetch(
+        `https://backend-cu-recom.up.railway.app/api/noti/send`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: productData.data[0].sellerid, // Assuming productData contains the seller's ID
+            text_TH: `สินค้า ${productData.data[0].name} ของคุณได้รับการอนุมัติแล้ว`,
+            text_EN: `Your product "${productData.data[0].name}" has been approved!`,
+            callbackUrl: `https://cu-recom-production.up.railway.app/shop/${productId}`,
+          }),
+        }
+      );
+
+      if (!noti.ok) throw new Error("Notification failed");
+
+      alert("สินค้าถูกอนุมัติแล้วและแจ้งเตือนไปยังผู้ขาย!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("เกิดข้อผิดพลาดในการแจ้งเตือน");
+    }
+  } catch (error) {
+    console.error("Approval error:", error);
+    alert("เกิดข้อผิดพลาดในการอนุมัติสินค้า");
+  }
+};
+
+const handleUnapproveLoud = async (productId) => {
+  const token = getCookie("token");
+  try {
+    // Step 1: Approve the product
+    const res = await fetch(
+      `https://backend-cu-recom.up.railway.app/api/products/unapprove/${productId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!res.ok) throw new Error("Approval failed");
+
+    // Step 2: Fetch product data to get the seller's ID
+    let productData;
+    try {
+      const product = await fetch(
+        `https://backend-cu-recom.up.railway.app/api/products/${productId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!product.ok) throw new Error("Failed to fetch product");
+
+      productData = await product.json(); // We need to use `await` to get the data
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      alert("เกิดข้อผิดพลาดในการดึงข้อมูลสินค้า");
+      return;
+    }
+
+    // Step 3: Send notification
+    try {
+      const noti = await fetch(
+        `https://backend-cu-recom.up.railway.app/api/noti/send`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: productData.data[0].sellerid, // Assuming productData contains the seller's ID
+            text_TH: `สินค้า ${productData.data[0].name} ของคุณได้ถูกยกเลิกการอนุมัติแล้ว`,
+            text_EN: `Your product "${productData.data[0].name}" has been unapproved`,
+            callbackUrl: `https://cu-recom-production.up.railway.app/shop/${productId}`,
+          }),
+        }
+      );
+
+      if (!noti.ok) throw new Error("Notification failed");
+
+      alert("สินค้าถูกยกเลิกการอนุมัติแล้วและแจ้งเตือนไปยังผู้ขาย!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      alert("เกิดข้อผิดพลาดในการแจ้งเตือน");
+    }
+  } catch (error) {
+    console.error("Approval error:", error);
+    alert("เกิดข้อผิดพลาดในยกเลิกอนุมัติสินค้า");
+  }
+};
+
 export default function ProductPage({ children, params }) {
   const [clientReady, setClientReady] = useState(false);
   const [product, setProduct] = useState(null);
@@ -122,7 +268,7 @@ export default function ProductPage({ children, params }) {
 
         {/* Show Delete Button Only if User is Seller */}
         <div className="mb-20">
-          <div className="grid grid-cols-2">
+          <div className="grid grid-cols-3">
             {isapprove === false ? (
               <button
                 className="bg-green-500 text-white rounded-full px-4 py-2"
@@ -138,6 +284,22 @@ export default function ProductPage({ children, params }) {
                 ยกเลิกอนุมัติ
               </button>
             )}
+            {isapprove === false ? (
+              <button
+                className="bg-green-500 text-white rounded-full px-4 py-2"
+                onClick={() => handleApproveLoud(params)}
+              >
+                อนุมัติ (LOUD)
+              </button>
+            ) : (
+              <button
+                className="bg-yellow-500 text-white rounded-full px-4 py-2"
+                onClick={() => handleUnapproveLoud(params)}
+              >
+                ยกเลิกอนุมัติ
+              </button>
+            )}
+
             <button
               className="bg-pink-400 text-white rounded-full px-4 py-2"
               onClick={() => handleDelete(params)}
