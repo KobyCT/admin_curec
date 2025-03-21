@@ -169,7 +169,14 @@ export default async function UnappProducts({ params }) {
                 {data.sellerFirstNameEN + " " + data.sellerLastNameEN}
               </p>
             </div>
-            <div className="text-2xl font-bold">{data.price}</div>
+            <div className="text-right">
+              <div className="text-2xl font-bold">ราคา: {data.price}฿</div>
+              {data.oldprice && (
+                <div className="text-red-500 line-through text-lg">
+                  ราคาเดิม: {data.oldprice}฿
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-2 mt-4">
