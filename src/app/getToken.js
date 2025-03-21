@@ -30,7 +30,12 @@ export default async function ServerComponent({ searchParams }) {
         Status:{" "}
         {cunextoken?.error ? `Error: ${cunextoken.error}` : "Token processed"}
       </p>
-      <PassToken name="token" arg={authtoken} name2="lang" arg2={lang} />
+      <PassToken
+        name="token"
+        arg="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMDE3MDY3MDc0OTIwMDAwMDIzMiIsImlhdCI6MTc0MjQ2NzA5MywiZXhwIjoxNzQ1MDU5MDkzfQ.32J-A7cefJwebPIS0raBD_Y7Ca7X4Sfp3Oe1kHPnCPU"
+        name2="lang"
+        arg2={lang}
+      />
     </div>
   );
 }
