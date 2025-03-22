@@ -12,7 +12,17 @@ export default async function ServerComponent({ searchParams }) {
     redirect("/productA");
   }
   if (token == null) {
-    return <div className="text-xl">Please re enter the site via CUNEX</div>;
+    return (
+      <div className="text-xl">
+        Please re enter the site via CUNEX
+        <PassToken
+          name="token"
+          arg="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMDE3MDY3MDc0OTIwMDAwMDIzMiIsImlhdCI6MTc0MjQ2NzA5MywiZXhwIjoxNzQ1MDU5MDkzfQ.32J-A7cefJwebPIS0raBD_Y7Ca7X4Sfp3Oe1kHPnCPU"
+          name2="lang"
+          arg2={lang}
+        />
+      </div>
+    );
   }
   // Only attempt to get token if one was provided
   let cunextoken = null;
